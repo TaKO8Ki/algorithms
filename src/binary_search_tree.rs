@@ -70,6 +70,26 @@ where
             None => self.value = Some(value),
         }
     }
+
+    pub fn min(&self) -> Option<&T> {
+        match &self.value {
+            Some(value) => match &self.left {
+                Some(node) => node.min(),
+                None => Some(value),
+            },
+            None => None,
+        }
+    }
+
+    pub fn max(&self) -> Option<&T> {
+        match &self.value {
+            Some(value) => match &self.right {
+                Some(node) => node.max(),
+                None => Some(value),
+            },
+            None => None,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -229,5 +249,71 @@ mod test {
                 })),
             }
         );
+    }
+
+    #[test]
+    fn test_max() {
+        assert_eq!(
+            BinarySearchTree {
+                value: Some(2),
+                right: Some(Box::new(BinarySearchTree {
+                    value: Some(4),
+                    right: Some(Box::new(BinarySearchTree {
+                        value: Some(5),
+                        right: Some(Box::new(BinarySearchTree {
+                            value: Some(9),
+                            right: None,
+                            left: Some(Box::new(BinarySearchTree {
+                                value: Some(6),
+                                right: None,
+                                left: None
+                            }))
+                        })),
+                        left: None
+                    })),
+                    left: None
+                })),
+                left: Some(Box::new(BinarySearchTree {
+                    value: Some(1),
+                    right: None,
+                    left: None
+                })),
+            }
+            .max(),
+            Some(&9)
+        )
+    }
+
+    #[test]
+    fn test_min() {
+        assert_eq!(
+            BinarySearchTree {
+                value: Some(2),
+                right: Some(Box::new(BinarySearchTree {
+                    value: Some(4),
+                    right: Some(Box::new(BinarySearchTree {
+                        value: Some(5),
+                        right: Some(Box::new(BinarySearchTree {
+                            value: Some(9),
+                            right: None,
+                            left: Some(Box::new(BinarySearchTree {
+                                value: Some(6),
+                                right: None,
+                                left: None
+                            }))
+                        })),
+                        left: None
+                    })),
+                    left: None
+                })),
+                left: Some(Box::new(BinarySearchTree {
+                    value: Some(1),
+                    right: None,
+                    left: None
+                })),
+            }
+            .min(),
+            Some(&1)
+        )
     }
 }
