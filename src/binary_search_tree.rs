@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 #[derive(Debug, PartialEq)]
 pub struct BinarySearchTree<T>
 where
@@ -25,6 +27,23 @@ impl<T> BinarySearchTree<T>
 where
     T: Ord,
 {
+    pub fn search(&self, value: T) -> bool {
+        match &self.value {
+            Some(v) => match v.cmp(&value) {
+                Ordering::Greater => match &self.left {
+                    Some(node) => node.search(value),
+                    None => false,
+                },
+                Ordering::Less => match &self.right {
+                    Some(node) => node.search(value),
+                    None => false,
+                },
+                Ordering::Equal => true,
+            },
+            None => false,
+        }
+    }
+
     pub fn insert(&mut self, value: T) {
         match &self.value {
             Some(v) => {
@@ -56,6 +75,30 @@ where
 #[cfg(test)]
 mod test {
     use super::BinarySearchTree;
+
+    #[test]
+    fn test_search() {
+        let root1 = BinarySearchTree {
+            value: None,
+            right: None,
+            left: None,
+        };
+        assert_eq!(root1.search(1), false);
+
+        let mut root2 = BinarySearchTree {
+            value: None,
+            right: None,
+            left: None,
+        };
+        root2.insert(2);
+        root2.insert(4);
+        root2.insert(1);
+        root2.insert(5);
+        root2.insert(9);
+        root2.insert(6);
+        assert_eq!(root2.search(3), false);
+        assert_eq!(root2.search(1), true);
+    }
 
     #[test]
     fn test_insert() {
@@ -145,6 +188,46 @@ mod test {
                     })),
                 })),
             }
-        )
+        );
+
+        let mut root5 = BinarySearchTree {
+            value: None,
+            right: None,
+            left: None,
+        };
+        root5.insert(2);
+        root5.insert(4);
+        root5.insert(1);
+        root5.insert(5);
+        root5.insert(9);
+        root5.insert(6);
+        assert_eq!(
+            root5,
+            BinarySearchTree {
+                value: Some(2),
+                right: Some(Box::new(BinarySearchTree {
+                    value: Some(4),
+                    right: Some(Box::new(BinarySearchTree {
+                        value: Some(5),
+                        right: Some(Box::new(BinarySearchTree {
+                            value: Some(9),
+                            right: None,
+                            left: Some(Box::new(BinarySearchTree {
+                                value: Some(6),
+                                right: None,
+                                left: None
+                            }))
+                        })),
+                        left: None
+                    })),
+                    left: None
+                })),
+                left: Some(Box::new(BinarySearchTree {
+                    value: Some(1),
+                    right: None,
+                    left: None
+                })),
+            }
+        );
     }
 }
