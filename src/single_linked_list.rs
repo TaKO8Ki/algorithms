@@ -1,5 +1,6 @@
 use std::iter::FromIterator;
 
+#[derive(Debug, PartialEq)]
 struct Node<T> {
     data: T,
     next: Option<Box<Node<T>>>,
@@ -11,6 +12,7 @@ impl<T> Node<T> {
     }
 }
 
+#[derive(Debug, PartialEq)]
 pub struct SingleLinkedList<T> {
     head: Option<Box<Node<T>>>,
 }
@@ -100,5 +102,82 @@ impl<T> Into<Vec<T>> for SingleLinkedList<T> {
         vec.reverse();
 
         vec
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::{Node, SingleLinkedList};
+
+    #[test]
+    fn test_push() {
+        let mut linked_list = SingleLinkedList::new();
+        linked_list.push(1);
+        assert_eq!(
+            linked_list,
+            SingleLinkedList {
+                head: Some(Box::new(Node {
+                    data: 1,
+                    next: None
+                }))
+            }
+        );
+        linked_list.push(2);
+        assert_eq!(
+            linked_list,
+            SingleLinkedList {
+                head: Some(Box::new(Node {
+                    data: 2,
+                    next: Some(Box::new(Node {
+                        data: 1,
+                        next: None
+                    }))
+                }))
+            }
+        )
+    }
+
+    #[test]
+    fn test_pop() {
+        let mut linked_list = SingleLinkedList {
+            head: Some(Box::new(Node {
+                data: 2,
+                next: Some(Box::new(Node {
+                    data: 1,
+                    next: None,
+                })),
+            })),
+        };
+        assert_eq!(linked_list.pop(), Some(2))
+    }
+
+    #[test]
+    fn test_is_empty() {
+        let linked_list1 = SingleLinkedList::<u8> { head: None };
+        assert_eq!(linked_list1.is_empty(), true);
+        let linked_list2 = SingleLinkedList {
+            head: Some(Box::new(Node {
+                data: 2,
+                next: Some(Box::new(Node {
+                    data: 1,
+                    next: None,
+                })),
+            })),
+        };
+        assert_eq!(linked_list2.is_empty(), false)
+    }
+
+    #[test]
+    fn test_len() {
+        let linked_list = SingleLinkedList {
+            head: Some(Box::new(Node {
+                data: 2,
+                next: Some(Box::new(Node {
+                    data: 1,
+                    next: None,
+                })),
+            })),
+        };
+        assert_eq!(linked_list.len(), 2)
     }
 }
