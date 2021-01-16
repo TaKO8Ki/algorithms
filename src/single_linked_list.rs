@@ -18,10 +18,6 @@ pub struct SingleLinkedList<T> {
 }
 
 impl<T> SingleLinkedList<T> {
-    pub fn new() -> Self {
-        SingleLinkedList { head: None }
-    }
-
     pub fn is_empty(&self) -> bool {
         self.head.is_none()
     }
@@ -61,7 +57,7 @@ impl<T> SingleLinkedList<T> {
     }
 
     pub fn rev(self) -> SingleLinkedList<T> {
-        let mut reversed = SingleLinkedList::new();
+        let mut reversed = SingleLinkedList::default();
         let mut c = self.head;
         while let Some(e) = c {
             reversed.push(e.data);
@@ -74,34 +70,7 @@ impl<T> SingleLinkedList<T> {
 
 impl<T> Default for SingleLinkedList<T> {
     fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl<T> FromIterator<T> for SingleLinkedList<T> {
-    fn from_iter<I: IntoIterator<Item = T>>(_iter: I) -> Self {
-        let mut list = SingleLinkedList::new();
-
-        for i in _iter {
-            list.push(i);
-        }
-
-        list
-    }
-}
-
-impl<T> Into<Vec<T>> for SingleLinkedList<T> {
-    fn into(self) -> Vec<T> {
-        let mut vec = vec![];
-        let mut c = self.head;
-        while let Some(e) = c {
-            vec.push(e.data);
-            c = e.next;
-        }
-
-        vec.reverse();
-
-        vec
+        SingleLinkedList { head: None }
     }
 }
 
@@ -111,7 +80,7 @@ mod test {
 
     #[test]
     fn test_push() {
-        let mut linked_list = SingleLinkedList::new();
+        let mut linked_list = SingleLinkedList::default();
         linked_list.push(1);
         assert_eq!(
             linked_list,
